@@ -28,7 +28,7 @@ fi
 
 # Clone your GitHub repository (replace <your-github-repository-url> with your actual repository URL)
 echo "Cloning your project..."
-git clone "https://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@github.com/arianabdi/license-checker.git"
+git clone "https://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@github.com/arianabdi/license-checker.git"
 
 # Navigate to the project directory
 cd license-checker

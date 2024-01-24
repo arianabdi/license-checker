@@ -5,7 +5,7 @@
 Run this command on your server
 
 ```agsl
-bash <(curl -Ls https://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@github.com/arianabdi/license-checker/main/scripts/installation.sh --ipv4)
+bash <(curl -Ls https://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@raw.githubusercontent.com/arianabdi/license-checker/main/scripts/installation.sh --ipv4)
 ```
 
 
