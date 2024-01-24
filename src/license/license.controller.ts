@@ -118,4 +118,26 @@ export class LicenseController {
         }
     }
 
+
+
+    // @ApiBearerAuth()
+    // @UseGuards(JwtAuthGuard)
+    @Get('/check/:accountId')
+    async checkLicense(@Req() req, @Res() res, @Param('accountId') id: string) {
+        const payload: Payload = {
+            user: req.user,
+            params: {
+                accountId: id
+            }
+        };
+
+
+        try {
+            const data = await this.licenseService.checkLicense(payload);
+            await SharedService.httpResponseHelper({res: res, data: data});
+        } catch (e) {
+            await SharedService.errorHelper(res, e);
+        }
+    }
+
 }

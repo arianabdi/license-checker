@@ -113,4 +113,26 @@ export class LicenseService {
 
         return license
     }
+
+    async checkLicense(payload: Payload) {
+        const accountId = payload.params.accountId;
+        const license = (await this.licenseSchema.findOne({
+            isAlive: true,
+            accountId: accountId
+        }))
+        if (!license)
+            throw new HttpException(LicenseApiResponse.LICENSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+
+        // Assuming expirationDate is a property of the license schema
+        const licenseDate = new Date(license.expirationDate);
+        const currentDate = new Date();
+
+        if (licenseDate && licenseDate < currentDate) {
+            // License is expired
+            return 'expired';
+        } else {
+            // License is active
+            return 'active';
+        }
+    }
 }
