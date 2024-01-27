@@ -1,4 +1,6 @@
-
+import {ApiProperty} from "@nestjs/swagger";
+import {Prop} from "@nestjs/mongoose";
+import mongoose from "mongoose";
 
 
 export enum LicenseApiResponse {
@@ -8,3 +10,9 @@ export enum LicenseApiResponse {
     NO_SERVER_FOUND = "no_server_found",  // 404 NOT_FOUND
 }
 
+
+export class CheckDTO {
+    @ApiProperty({type: String, default: '0000000000'})
+    @Prop({type: mongoose.Schema.Types.String})
+    accountId?: string
+}

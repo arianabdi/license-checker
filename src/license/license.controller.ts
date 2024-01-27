@@ -8,7 +8,7 @@ import {LicenseService} from "./license.service";
 import {PaginationPipe} from "../shared/pagination/pagination.pipe";
 import {Pagination} from "../shared/pagination/pagination.model";
 import {RolesGuard} from "../auth/guards/roles.guard";
-
+import * as rawBody from "raw-body";
 
 @ApiTags('License')
 @Controller('api/license')
@@ -122,17 +122,18 @@ export class LicenseController {
 
     // @ApiBearerAuth()
     // @UseGuards(JwtAuthGuard)
-    @Get('/check/:accountId')
-    async checkLicense(@Req() req, @Res() res, @Param('accountId') id: string) {
-        const payload: Payload = {
+    @Post('/check')
+    async checkLicense(@Req() req, @Res() res, @Body() body: any) {
+        let payload: Payload = {
             user: req.user,
             params: {
-                accountId: id
+                accountId: Object.keys(body)[0].replace(/\x00/g, '')
             }
         };
 
 
         try {
+
             const data = await this.licenseService.checkLicense(payload);
             await SharedService.httpResponseHelper({res: res, data: data});
         } catch (e) {

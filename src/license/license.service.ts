@@ -5,7 +5,7 @@ import {Model} from "mongoose";
 import {License, LicenseDocument} from "./license.schema";
 import {Payload} from "../shared/shared.model";
 import {LicenseApiResponse} from "./license.model";
-
+import * as jschardet from 'jschardet';
 @Injectable()
 export class LicenseService {
     constructor(
@@ -113,13 +113,24 @@ export class LicenseService {
 
         return license
     }
+    detectEncoding(data: string): string {
+        const result = jschardet.detect(data);
+        return result.encoding;
+    }
+
 
     async checkLicense(payload: Payload) {
+        console.log('dddd', payload.params.accountId, typeof payload.params.accountId)
         const accountId = payload.params.accountId;
+
+
+
+        console.log('detectEncoding', this.detectEncoding(accountId))
         const license = (await this.licenseSchema.findOne({
             isAlive: true,
             accountId: accountId
         }))
+        console.log('license', license)
         if (!license)
             throw new HttpException(LicenseApiResponse.LICENSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
