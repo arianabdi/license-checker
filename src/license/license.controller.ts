@@ -124,6 +124,7 @@ export class LicenseController {
     // @UseGuards(JwtAuthGuard)
     @Post('/check')
     async checkLicense(@Req() req, @Res() res, @Body() body: any) {
+        console.log('body', body);
         let payload: Payload = {
             user: req.user,
             params: {
