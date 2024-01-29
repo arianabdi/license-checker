@@ -23,7 +23,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
-    await app.listen(30244);
+    await app.listen(80);
     dotenv.config({
         path: `${__dirname}/.env`
     });
