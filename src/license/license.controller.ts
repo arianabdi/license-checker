@@ -37,8 +37,8 @@ export class LicenseController {
     }
 
 
-    // @ApiBearerAuth()
-    // @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Get('/all')
     async getAllLicense(@Query(new PaginationPipe()) pagination: Pagination, @Req() req, @Res() res) {
         const payload: Payload = {
@@ -55,8 +55,8 @@ export class LicenseController {
         }
     }
 
-    // @ApiBearerAuth()
-    // @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Get('/:accountId')
     async getLicenseByAccountId(@Req() req, @Res() res, @Param('accountId') id: string) {
         const payload: Payload = {
@@ -76,8 +76,8 @@ export class LicenseController {
     }
 
 
-    // @ApiBearerAuth()
-    // @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Delete('/:accountId')
     async deleteLicenseByAccountId(@Req() req, @Res() res, @Param('accountId') id: string) {
         const payload: Payload = {
@@ -97,8 +97,8 @@ export class LicenseController {
     }
 
 
-    // @ApiBearerAuth()
-    // @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Put('/:accountId')
     async updateLicenseByAccountId(@Req() req, @Res() res, @Param('accountId') id: string, @Body() body: License) {
         const payload: Payload = {
