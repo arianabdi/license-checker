@@ -20,7 +20,8 @@ export class LicenseController {
     }
 
 
-    // @ApiBearerAuth()
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Post('')
     async createNewLicense(@Req() req, @Res() res, @Body() body: License) {
         const payload: Payload = {

@@ -61,7 +61,8 @@ export class UserController {
     ) {
     }
 
-
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
     @Post('/register')
     async register(@Req() req, @Res() res, @Body() body: RegisterDto) {
         const payload: Payload = {
