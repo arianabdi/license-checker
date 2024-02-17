@@ -25,22 +25,7 @@ import {Pagination} from "../shared/pagination/pagination.model";
 import {PaginationPipe} from "../shared/pagination/pagination.pipe";
 import {HttpStatusDescription, Payload} from "../shared/shared.model";
 import {Role} from "../auth/auth.model";
-import {EndpointDevelopmentStatus} from "../app.model";
-import {
-    AccessDeniedResponse,
-    GetAllUsersSuccessResponses,
-    NoUserFoundResponse,
-    SignedInUserDataUpdatedSuccessfully,
-    UnauthorizedUserResponse,
-    UserApiBadRequestResponses,
-    UserApiNotAcceptableResponses,
-    UserDataUpdatedSuccessfully,
-    UserDeletedSuccessfully,
-    UserNotFoundResponse,
-    UserReceivedSuccessfully,
-    UserSuccessfullyLoggedInResponses,
-    UserSuccessfullyRegisteredResponses
-} from "./user.swagger";
+
 import {SharedService} from "../shared/shared.service";
 import {UserApiResponse} from "./user.model";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
@@ -87,6 +72,22 @@ export class UserController {
 
         try {
             await this.userService.login(payload);
+        } catch (e) {
+            await SharedService.errorHelper(res, e);
+        }
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('/check')
+    async check(@Res() res, @Req() req, @Body() body: LoginDto) {
+        const payload: Payload = {
+            body: body,
+            user: req.user
+        };
+
+        try {
+            await this.userService.check(payload);
         } catch (e) {
             await SharedService.errorHelper(res, e);
         }

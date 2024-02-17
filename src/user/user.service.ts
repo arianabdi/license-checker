@@ -93,7 +93,7 @@ export class UserService {
 
         return await SharedService.httpResponseHelper({
             res: payload.res,
-            data: {accessToken: accessToken},
+            data: {accessToken: accessToken, user: userExists},
             message: UserApiResponse.USER_SUCCESSFULLY_LOGGED_IN
         });
 
@@ -392,5 +392,19 @@ export class UserService {
 
     async addWalletToAllusers() {
         await this.userSchema.updateMany({}, {$set: {wallet: 0}});
+    }
+
+    async check(payload: Payload) {
+        console.log('payload', payload)
+        const user = await this.userSchema.findOne({
+            _id: new ObjectId(payload.user.userId)
+        })
+
+        if(!user) {
+            throw  new Error('no user found')
+            return false;
+        }
+
+        return true
     }
 }
