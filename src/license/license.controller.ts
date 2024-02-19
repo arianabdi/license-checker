@@ -41,10 +41,11 @@ export class LicenseController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('/all')
-    async getAllLicense(@Query(new PaginationPipe()) pagination: Pagination, @Req() req, @Res() res) {
+    async getAllLicense(@Query(new PaginationPipe()) pagination: Pagination, @Query() filter, @Req() req, @Res() res) {
         const payload: Payload = {
             user: req.user,
-            pagination: pagination
+            pagination: pagination,
+            filter: filter
         };
 
 

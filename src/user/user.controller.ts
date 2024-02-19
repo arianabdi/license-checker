@@ -87,7 +87,12 @@ export class UserController {
         };
 
         try {
-            await this.userService.check(payload);
+            const data = await this.userService.check(payload);
+            await SharedService.httpResponseHelper({
+                res: res,
+                data: data,
+                message: UserApiResponse.USER_RECEIVED_SUCCESSFULLY
+            });
         } catch (e) {
             await SharedService.errorHelper(res, e);
         }
@@ -124,10 +129,11 @@ export class UserController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.SUPER_ADMIN, Role.ADMIN)
     @Get('/list')
-    async getAllUsers(@Query(new PaginationPipe()) pagination: Pagination, @Req() req, @Res() res) {
+    async getAllUsers(@Query(new PaginationPipe()) pagination: Pagination, @Query() filter, @Req() req, @Res() res) {
         const payload: Payload = {
             user: req.user,
-            pagination: pagination
+            pagination: pagination,
+            filter: filter
         };
 
         try {

@@ -147,11 +147,40 @@ export class UserService {
         return {user: user};
     }
 
+    async filterQuery(filter: any){
+
+        let output ={}
+
+        if (filter.categoryId) {
+            output = {...output, categoryId: new ObjectId(filter.categoryId)}
+        }
+
+        if(filter.level){
+            output = {...output, level: filter.level}
+        }
+
+        if(filter.title){
+            output = {...output, title: new RegExp(filter.title, 'i')}
+        }
+
+        return output
+    }
 
     async getAllUsers(payload: Payload) {
-        const totalItem = (await this.userSchema.find()).length
+        // const totalItem = (await this.userSchema.find()).length
+
+        console.log('filter', payload.filter);
+        let filterParams = await this.filterQuery(payload.filter)
+
+        console.log('filterParams',filterParams)
+        const filters = {isAlive: true, ...filterParams}
+        console.log('filters',filters)
+
+
+        const totalItems = (await this.userSchema.find(filters)).length;
+
         const users = (await this.userSchema.aggregate([
-            {$match: {isAlive: true}},
+            {$match: filters},
             {$project: {password: 0}},
             {$sort: {"createdAt": -1}}, //newest=-1  oldest=1
             {$skip: (payload.pagination?.limit || 0) * (payload.pagination?.page ? payload.pagination?.page - 1 : 0)}, //
@@ -162,7 +191,7 @@ export class UserService {
 
         return {
             users: users,
-            totalItems: totalItem
+            totalItems: totalItems
         };
     }
 
