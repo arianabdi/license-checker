@@ -6,6 +6,7 @@ import {License, LicenseDocument} from "./license.schema";
 import {Payload} from "../shared/shared.model";
 import {LicenseApiResponse} from "./license.model";
 import * as jschardet from 'jschardet';
+import {ObjectId} from "mongodb";
 @Injectable()
 export class LicenseService {
     constructor(
@@ -45,26 +46,45 @@ export class LicenseService {
         return license;
     }
 
+    async filterQuery(filter: any){
+
+        let output ={}
+
+        if (filter.firstname) {
+            output = {...output, firstname: filter.firstname}
+        }
+
+        if (filter.lastname) {
+            output = {...output, lastname: filter.lastname}
+        }
+
+        if (filter.broker) {
+            output = {...output, broker: filter.broker}
+        }
+
+        if (filter.accountId) {
+            output = {...output, accountId: filter.accountId}
+        }
+
+        return output
+    }
+
     async getAllLicense(payload: Payload) {
-        const totalItems = (await this.licenseSchema.aggregate([
-            {
-                $match: {
-                    isAlive: true
-                }
-            },
-        ])).length;
+
+        console.log('filter', payload.filter);
+        let filterParams = await this.filterQuery(payload.filter)
+
+        console.log('filterParams',filterParams)
+        const filters = {isAlive: true, ...filterParams}
+        console.log('filters',filters)
+
+
+        const totalItems = (await this.licenseSchema.find(filters)).length;
 
         const license = (await this.licenseSchema.aggregate([
-            {
-                $match: {
-                    isAlive: true
-                }
-            },
-            {
-                $skip: (payload.pagination?.limit || 0) * (payload.pagination?.page ? payload.pagination?.page - 1 : 0)
-            }, !payload.pagination?.limit ? {$skip: 0} : {
-                $limit: payload.pagination?.limit
-            },
+            {$match: filters},
+            {$skip: (payload.pagination?.limit || 0) * (payload.pagination?.page ? payload.pagination?.page - 1 : 0)},
+            !payload.pagination?.limit ? {$skip: 0} : {$limit: payload.pagination?.limit},
         ]))
 
         return {license: license, totalItems: totalItems}
